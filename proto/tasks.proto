@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/ucok-man/gradded-challenge-2-p3-contract/pb";
+
+message CreateTasksRequest {
+  string title = 1;
+  string description = 2;
+  google.protobuf.Timestamp due_date = 3;
+}
+
+message CreateTasksResponse {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  google.protobuf.Timestamp due_date = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+service TasksService {
+  rpc Create(CreateTasksRequest) returns (CreateTasksResponse) {};
+}
