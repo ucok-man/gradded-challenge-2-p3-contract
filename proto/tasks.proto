@@ -18,6 +18,33 @@ message CreateTasksResponse {
   google.protobuf.Timestamp created_at = 5;
 }
 
+message GetAllTaskRequest {
+  string title = 1;
+  string description = 2;
+  string sort = 3;
+  string sort_column = 4;
+  string sort_direction = 5;
+  int64 limit = 6;
+  int64 offset = 7;
+  int64 page = 8;
+  int64 page_size = 9;
+}
+
+message GetAllTaskResponse {
+  message Tasks {
+    int64 id = 1;
+    int64 user_id = 2;
+    string title = 3;
+    string description = 4;
+    google.protobuf.Timestamp due_date = 5;
+    google.protobuf.Timestamp created_at = 6;
+  }
+
+  repeated Tasks tasks = 1;
+  int64 total_record = 2;
+}
+
 service TasksService {
   rpc Create(CreateTasksRequest) returns (CreateTasksResponse) {};
+  rpc GetAll(GetAllTaskRequest) returns (GetAllTaskResponse) {};
 }

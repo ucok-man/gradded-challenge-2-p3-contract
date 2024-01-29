@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TasksServiceClient interface {
 	Create(ctx context.Context, in *CreateTasksRequest, opts ...grpc.CallOption) (*CreateTasksResponse, error)
+	GetAll(ctx context.Context, in *GetAllTaskRequest, opts ...grpc.CallOption) (*GetAllTaskResponse, error)
 }
 
 type tasksServiceClient struct {
@@ -42,11 +43,21 @@ func (c *tasksServiceClient) Create(ctx context.Context, in *CreateTasksRequest,
 	return out, nil
 }
 
+func (c *tasksServiceClient) GetAll(ctx context.Context, in *GetAllTaskRequest, opts ...grpc.CallOption) (*GetAllTaskResponse, error) {
+	out := new(GetAllTaskResponse)
+	err := c.cc.Invoke(ctx, "/TasksService/GetAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TasksServiceServer is the server API for TasksService service.
 // All implementations must embed UnimplementedTasksServiceServer
 // for forward compatibility
 type TasksServiceServer interface {
 	Create(context.Context, *CreateTasksRequest) (*CreateTasksResponse, error)
+	GetAll(context.Context, *GetAllTaskRequest) (*GetAllTaskResponse, error)
 	mustEmbedUnimplementedTasksServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedTasksServiceServer struct {
 
 func (UnimplementedTasksServiceServer) Create(context.Context, *CreateTasksRequest) (*CreateTasksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedTasksServiceServer) GetAll(context.Context, *GetAllTaskRequest) (*GetAllTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedTasksServiceServer) mustEmbedUnimplementedTasksServiceServer() {}
 
@@ -88,6 +102,24 @@ func _TasksService_Create_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TasksService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServiceServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TasksService/GetAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServiceServer).GetAll(ctx, req.(*GetAllTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TasksService_ServiceDesc is the grpc.ServiceDesc for TasksService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var TasksService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _TasksService_Create_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _TasksService_GetAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
