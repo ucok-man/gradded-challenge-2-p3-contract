@@ -44,7 +44,46 @@ message GetAllTaskResponse {
   int64 total_record = 2;
 }
 
+message GetByIDRequest { int64 id = 1; }
+
+message GetByIDResponse {
+  int64 id = 1;
+  int64 user_id = 2;
+  string title = 3;
+  string description = 4;
+  google.protobuf.Timestamp due_date = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message UpdateTaskRequest {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  google.protobuf.Timestamp due_date = 4;
+}
+
+message UpdateTaskResponse {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  google.protobuf.Timestamp due_date = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message DeleteTaskRequest { int64 id = 1; }
+
+message DeleteTaskResponse {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  google.protobuf.Timestamp due_date = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
 service TasksService {
   rpc Create(CreateTasksRequest) returns (CreateTasksResponse) {};
   rpc GetAll(GetAllTaskRequest) returns (GetAllTaskResponse) {};
+  rpc GetByID(GetByIDRequest) returns (GetByIDResponse) {}
+  rpc Update(UpdateTaskRequest) returns (UpdateTaskResponse) {};
+  rpc Delete(DeleteTaskRequest) returns (DeleteTaskResponse) {};
 }
